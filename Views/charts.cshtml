@@ -1,0 +1,153 @@
+﻿@{
+    Layout = "_Layout";
+}
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        var timesArray = @Html.Raw(Json.Serialize(ViewData["times"]));
+        var bpArray = @Html.Raw(Json.Serialize(ViewData["bpTemps"]));
+        var csArray = @Html.Raw(Json.Serialize(ViewData["csTemps"]));
+        var dataPointsNumber = @Html.Raw(Json.Serialize(ViewData["dataPointsNumber"]));
+
+        function drawChart() {
+
+            var dataTable = [['time', 'Budapest', 'Csíkszereda']];
+            for (let i = 0; i < dataPointsNumber; i++) {
+                dataTable.push([new Date(timesArray[i]), bpArray[i], csArray[i]]);
+            }
+
+            var data = google.visualization.arrayToDataTable(dataTable);
+
+            var options = {
+                colors: ['orange', 'blue'],
+                title: 'the weather here and in my hometown',
+                titleTextStyle: { fontSize: '25' },
+                vAxis: {
+                   
+                    title: 'temperature in °C',
+                    titleTextStyle: {
+                        fontSize: '18',
+                        bold: 'true',
+                        italic:'true'
+                    },
+                    textStyle: {
+                        fontSize: '18',
+                        bold: 'true'
+                    },
+                    gridlines: {
+                        color: 'black'
+                    },
+                    minorGridlines: {
+                        color: 'grey'
+                    }
+                },
+                hAxis: {
+                    textStyle: {
+                        fontSize: '18',
+                        bold: 'true'
+                    },
+                    minorGridlines: {
+                        count: '0'
+                    },
+                    gridlines: {
+                        color: "lightgrey"
+                    },
+                    format: ['MMMM d, h', 'ha']
+                },
+                chartArea: {
+                    width: "95%",
+                    height: "75%",
+                    left: "60"
+                },
+                legend: {
+                    position: 'top',
+                    alignment: 'end',
+                    textStyle: {
+                        fontSize: '25',
+                        bold: 'true',
+                        italic: 'true'
+                    }
+                },
+                backgroundColor: 'lightgray',
+
+            };
+
+            var chart = new google.visualization.AreaChart(document.getElementById('area_chart'));
+            chart.draw(data, options);
+        }
+    </script>
+    <script>
+        google.charts.load("current", { packages: ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+        var worstAnnotation = @Html.Raw(Json.Serialize(ViewData["worstAnnotation"]));
+        var latestAnnotation = @Html.Raw(Json.Serialize(ViewData["latestAnnotation"]));
+        var worstIndex = @Html.Raw(Json.Serialize(ViewData["worstIndex"]));
+        var latestIndex = @Html.Raw(Json.Serialize(ViewData["latestIndex"]));
+
+        function drawChart() {
+               var data = new google.visualization.DataTable();
+                data.addColumn('string', 'coumn name'); 
+                data.addColumn('number', 'index value'); 
+                data.addColumn({ type: 'string', role: 'annotation' });
+                data.addColumn({type:'string', role:'style'});
+                data.addRows([
+                    ['worst yet', worstIndex,  worstAnnotation, "color: darkgrey"],
+                    ['current',  latestIndex, latestAnnotation, "color: darkSlateBlue"]
+                ]);
+
+            var view = new google.visualization.DataView(data);
+
+            var myTicks = [{ v: 0, f: 'Budapest is a beautiful city' }];
+            for (let i = 0; i < 5; i++) {
+                myTicks.push({ v: i * 100, f: " " });
+            }
+            myTicks.push({ v: 500, f: 'not great, not terrible' });
+            for (let i = 6; i < 10; i++) {
+                myTicks.push({ v: i * 100, f: " " });
+            }
+            myTicks.push({ v: 1000, f: "when's the first train home?" });
+
+            var options = {
+                title: "temperature-based homesickness index",
+                titleTextStyle: {
+                    fontSize: '25',
+                    alignment: 'end'
+                },
+                bar: { groupWidth: "70%" },
+                enableInteractivity: true,
+                vAxis: {
+                    ticks: myTicks,
+                    gridlines: {
+                        color: 'black'
+                    },
+                    textStyle: {
+                        fontSize: '18',
+                        bold: 'true'
+                    }
+                },
+                hAxis: {
+                    textStyle: {
+                        fontSize: '18',
+                        bold: 'true'
+                    }
+                },
+                chartArea: {
+                    width: "90%",
+                    height: "75%",
+                    left: "140"
+                },
+                backgroundColor: 'lightgray',
+                annotations: {
+                    textStyle: {
+                        fontSize: '16',
+                        bold: 'true',
+                        color: 'black'
+                    }
+                }
+            };
+            var chart = new google.visualization.ColumnChart(document.getElementById("column_chart"));
+            chart.draw(view, options);
+        }
+    </script>
