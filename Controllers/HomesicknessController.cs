@@ -16,8 +16,14 @@ namespace HomesicknessVisualiser.Controllers
             _recordService = recordService;
         }
 
+        [HttpGet("/")]
+        public IActionResult GetDefault()
+        {
+            return Redirect("/homesickness/week");
+        }
+
         [HttpGet("homesickness/{timespan}")]
-        public ViewResult GetFor(string timespan)
+        public ViewResult Charts(string timespan)
         {
             List<Record> records;
 
@@ -61,7 +67,7 @@ namespace HomesicknessVisualiser.Controllers
                                                 "Cs " + worst.CsTemperature + "°C"));
             ViewData.Add("worstIndex", (worst.Index));
 
-            return View("Views/charts.cshtml");
+            return View("Views/Charts.cshtml");
         }
     }
 }
