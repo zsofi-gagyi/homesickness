@@ -5,11 +5,11 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
     font-weight: normal;
-    background-color: lightgray;
+    background-color: #edebeb;
 }
 
 #title, #footer {
-    color: lightsteelblue;
+    color: #edebeb;
     background-color: black;
     align-content: center;
 }
@@ -43,7 +43,8 @@ h3 {
     font-size: 25px;
     font-weight: bold;
     position: absolute;
-    margin: 40px 225px;
+    margin-top: 40px;
+    transform: translateX( calc(50% - 551px ));
     width: 1550px;
     display: flex;
     flex-direction: row;
@@ -78,7 +79,7 @@ span, #links a {
 }
 
 span {
-    background-color: darkgrey;
+    background-color: #c9c9c9;
     margin-left: 15px;
 }
 
@@ -89,7 +90,7 @@ span {
 }
 
 .notChosen {
-    background-color: darkgrey;
+    background-color: #c9c9c9;
     color: darkslateblue;
 }
 
@@ -105,13 +106,13 @@ span {
 }
 
     #footer a {
-        color: lightsteelblue;
+        color: #edebeb;
     }
 
     #footer p {
         text-align: center;
         width: 1640px;
-        padding: 20px 0;
+        padding: 20px 0 0 0;
         margin: auto;
         font-size: 20px;
     }
