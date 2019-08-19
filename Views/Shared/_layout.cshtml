@@ -9,15 +9,15 @@
 </head>
 <body>
     <div id="title">
-        <h3>homesickness</h3>
+        <h1>homesickness</h1>
         <div id="locations">
-            <p>from Budapest</p>
-            <p>to Csíkszereda</p>
+            <h2>from Budapest</h2>
+            <h2>to Csíkszereda</h2>
         </div>
     </div>
     <div id="chartTitles">
-        <p>The weather here and in my hometown</p>
-        <p>Temperature-based homesickness inndex</a>
+        <h3>The weather here and in my hometown</h3>
+        <h3>Temperature-based homesickness index</h3>
     </div>
     <div id="charts">
         <div id="area_chart" style="width: 1170px; height: 550px"></div>
@@ -29,7 +29,7 @@
         <a href="/homesickness/day" class=@(ViewData["timespan"].Equals("day") ? "chosen" : "notChosen")>for the last day</a>
         <a id="lastLink" href="/homesickness/all" class=@(ViewData["timespan"].Equals("all") ? "chosen" : "notChosen")>since the app has started gathering data</a>
     </div>
-    <div id="footer">
+    <footer>
         <p>
             Thanks to
             / <a href="https://developers.google.com/chart/">Google Charts</a> for the charts
@@ -40,6 +40,6 @@
             <br />
             / <a href="https://docs.microsoft.com/en-us/aspnet/core/?view=aspnetcore-2.2">ASP.NET Core</a> for keeping everything together as a framework
         </p>
-    </div>
+    </footer>
 </body>
 </html>

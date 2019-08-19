@@ -8,7 +8,7 @@ body {
     background-color: #edebeb;
 }
 
-#title, #footer {
+#title, footer {
     color: #edebeb;
     background-color: black;
     align-content: center;
@@ -24,7 +24,7 @@ body {
     font-family: 'Codystar', cursive;
 }
 
-h3 {
+h1 {
     font-weight: lighter;
     font-size: 140px;
 }
@@ -32,25 +32,28 @@ h3 {
 #locations {
     padding: 19px 0 0 20px;
     font-weight: bold;
-    font-size: 60px;
 }
 
-#locations p {
-    line-height: 61px;
-}
+    #locations h2 {
+        font-size: 60px;
+        line-height: 61px;
+    }
 
 #chartTitles {
-    font-size: 25px;
     font-weight: bold;
     position: absolute;
     margin-top: 40px;
-    transform: translateX( calc(50% - 551px ));
+    transform: translateX( calc(50% - 541px ));
     width: 1550px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     z-index: 100;
 }
+
+    #chartTitles h3 {
+        font-size: 25px;
+    }
 
 #charts{
     margin: 45px 0;
@@ -98,18 +101,18 @@ span {
     margin-right: 0;
 }
 
-#footer {
+footer {
     bottom: 0;
     position: absolute;
     height: 82px;
     width: 100%;
 }
 
-    #footer a {
+    footer a {
         color: #edebeb;
     }
 
-    #footer p {
+    footer p {
         text-align: center;
         width: 1640px;
         padding: 20px 0 0 0;
