@@ -6,21 +6,21 @@
         google.charts.load('current', { 'packages': ['corechart'] });
         google.charts.setOnLoadCallback(drawChart);
 
-        var timesArray = @Html.Raw(Json.Serialize(ViewData["times"]));
-        var bpArray = @Html.Raw(Json.Serialize(ViewData["bpTemps"]));
-        var csArray = @Html.Raw(Json.Serialize(ViewData["csTemps"]));
-        var dataPointsNumber = @Html.Raw(Json.Serialize(ViewData["dataPointsNumber"]));
+        let timesArray = @Html.Raw(Json.Serialize(ViewData["times"]));
+        let bpArray = @Html.Raw(Json.Serialize(ViewData["bpTemps"]));
+        let csArray = @Html.Raw(Json.Serialize(ViewData["csTemps"]));
+        let dataPointsNumber = @Html.Raw(Json.Serialize(ViewData["dataPointsNumber"]));
 
         function drawChart() {
 
-            var dataTable = [['time', 'Budapest', 'Csíkszereda']];
+            let dataTable = [['time', 'Budapest', 'Csíkszereda']];
             for (let i = 0; i < dataPointsNumber; i++) {
                 dataTable.push([new Date(timesArray[i]), bpArray[i], csArray[i]]);
             }
 
-            var data = google.visualization.arrayToDataTable(dataTable);
+            let data = google.visualization.arrayToDataTable(dataTable);
 
-            var options = {
+            let options = {
                 colors: ['orange', 'blue'],
                 vAxis: {
                    
@@ -72,32 +72,33 @@
 
             };
 
-            var chart = new google.visualization.AreaChart(document.getElementById('area_chart'));
+            let chart = new google.visualization.AreaChart(document.getElementById('area_chart'));
             chart.draw(data, options);
         }
     </script>
     <script>
         google.charts.load("current", { packages: ['corechart'] });
         google.charts.setOnLoadCallback(drawChart);
-        var worstAnnotation = @Html.Raw(Json.Serialize(ViewData["worstAnnotation"]));
-        var latestAnnotation = @Html.Raw(Json.Serialize(ViewData["latestAnnotation"]));
-        var worstIndex = @Html.Raw(Json.Serialize(ViewData["worstIndex"]));
-        var latestIndex = @Html.Raw(Json.Serialize(ViewData["latestIndex"]));
+
+        let worstAnnotation = @Html.Raw(Json.Serialize(ViewData["worstAnnotation"]));
+        let latestAnnotation = @Html.Raw(Json.Serialize(ViewData["latestAnnotation"]));
+        let worstIndex = @Html.Raw(Json.Serialize(ViewData["worstIndex"]));
+        let latestIndex = @Html.Raw(Json.Serialize(ViewData["latestIndex"]));
 
         function drawChart() {
-               var data = new google.visualization.DataTable();
-                data.addColumn('string', 'coumn name'); 
-                data.addColumn('number', 'index value'); 
-                data.addColumn({ type: 'string', role: 'annotation' });
-                data.addColumn({type:'string', role:'style'});
-                data.addRows([
-                    ['worst yet', worstIndex,  worstAnnotation, "color: #c9c9c9"],
-                    ['current',  latestIndex, latestAnnotation, "color: #9d8ab4"]
-                ]);
+            let data = new google.visualization.DataTable();
+            data.addColumn('string', 'coumn name'); 
+            data.addColumn('number', 'index value'); 
+            data.addColumn({ type: 'string', role: 'annotation' });
+            data.addColumn({type:'string', role:'style'});
+            data.addRows([
+                ['worst yet', worstIndex,  worstAnnotation, "color: #c9c9c9"],
+                ['current',  latestIndex, latestAnnotation, "color: #9d8ab4"]
+            ]);
 
-            var view = new google.visualization.DataView(data);
+            let view = new google.visualization.DataView(data);
 
-            var myTicks = [{ v: 0, f: 'Budapest is a beautiful city' }];
+            let myTicks = [{ v: 0, f: 'Budapest is a beautiful city' }];
             for (let i = 0; i < 5; i++) {
                 myTicks.push({ v: i * 100, f: " " });
             }
@@ -107,7 +108,7 @@
             }
             myTicks.push({ v: 1000, f: "when's the first train home?" });
 
-            var options = {
+            let options = {
                 bar: { groupWidth: "70%" },
                 enableInteractivity: true,
                 vAxis: {
@@ -140,7 +141,7 @@
                     }
                 }
             };
-            var chart = new google.visualization.ColumnChart(document.getElementById("column_chart"));
+            let chart = new google.visualization.ColumnChart(document.getElementById("column_chart"));
             chart.draw(view, options);
         }
     </script>
