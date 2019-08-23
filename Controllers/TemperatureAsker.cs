@@ -9,29 +9,23 @@ namespace HomesicknessVisualiser.Controllers
 {
     public class TemperatureAsker 
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly HttpClient _client;
         private readonly RecordService _recordService;
 
         public TemperatureAsker(IHttpClientFactory httpClientFactory, RecordService recordService)
         {
             
-            _httpClientFactory = httpClientFactory;
+            _client = httpClientFactory.CreateClient("temperatureGetter");
             _recordService = recordService;
         }
 
         public async Task Ask()
         {
-            var client = _httpClientFactory.CreateClient("temperatureGetter");
-            string result = await client.GetStringAsync("");
+            string result = await _client.GetStringAsync("");
             var objectResult = JObject.Parse(result);
 
-            float bpTempInKelvin = objectResult["list"][0]["main"]["temp"].Value<float>();
-            float bpTempWithManyDecimals = bpTempInKelvin - 273.15f;
-            float bpTemp = MathF.Truncate(bpTempWithManyDecimals * 10) / 10F;
-
-            float csTempInKelvin = objectResult["list"][1]["main"]["temp"].Value<float>();
-            float csTempWithManyDecimals = csTempInKelvin - 273.15f;
-            float csTemp = MathF.Truncate(csTempWithManyDecimals * 10) / 10F;
+            float bpTemp = GetTemperatureFor(objectResult, 0);
+            float csTemp = GetTemperatureFor(objectResult, 1);
 
             int index = indexCalculator.getIndex(bpTemp, csTemp);
 
@@ -44,6 +38,13 @@ namespace HomesicknessVisualiser.Controllers
                     Index = index
                 }
             );
+        }
+
+        private static float GetTemperatureFor(JObject objectResult, int i)
+        {
+            float tempInKelvin = objectResult["list"][i]["main"]["temp"].Value<float>();
+            float tempWithManyDecimals = tempInKelvin - 273.15f;
+            return MathF.Truncate(tempWithManyDecimals * 10) / 10F;
         }
     }
 }
