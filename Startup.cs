@@ -36,7 +36,6 @@ namespace HonvagyVisualiser
                );
 
             services.AddScoped<RecordService>();
-
             services.AddScoped<TemperatureAsker>();
         }
 
@@ -51,7 +50,11 @@ namespace HonvagyVisualiser
             app.UseStaticFiles();
 
             app.UseHangfireDashboard();
-            var temperatureAsker = app.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<TemperatureAsker>();
+            var temperatureAsker = app.ApplicationServices
+                .CreateScope()
+                .ServiceProvider
+                .GetRequiredService<TemperatureAsker>();
+
             RecurringJob.AddOrUpdate(() => temperatureAsker.Ask(), Cron.Hourly);
         }
     }

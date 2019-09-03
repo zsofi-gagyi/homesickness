@@ -6,8 +6,8 @@ namespace HomesicknessVisualiser.Services
     {
         public static long ToJavascriptReadable(this DateTime dt)
         {
-            long DatetimeMinTimeTicks = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).Ticks;
-            return (dt.ToUniversalTime().Ticks - DatetimeMinTimeTicks) / 10000;
+            long DateTimeMinTimeTicks = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).Ticks;
+            return (dt.ToUniversalTime().Ticks - DateTimeMinTimeTicks) / 10000;
         }
 
         public static string ToShortDate(this DateTime dt)

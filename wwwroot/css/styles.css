@@ -101,6 +101,11 @@ span {
     margin-right: 0;
 }
 
+#errorMessage {
+    color: #cc0479;
+    font-size: 20px;
+}
+
 footer {
     bottom: 0;
     position: absolute;
