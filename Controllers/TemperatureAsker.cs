@@ -51,7 +51,7 @@ namespace HomesicknessVisualiser.Controllers
                 return;
             }
 
-            int index = indexCalculator.getIndex(bpTemp, csTemp);
+            int index = IndexCalculator.getIndex(bpTemp, csTemp);
             try
             {
                 _recordService.Save(
