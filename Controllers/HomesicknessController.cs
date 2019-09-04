@@ -81,7 +81,7 @@ namespace HomesicknessVisualiser.Controllers
             PrepareAreaChart(records, ViewData);
             PrepareBarChart(records, ViewData);
             
-            _logger.LogInformation("view generated for " + interval);
+            _logger.LogInformation("view generated for \"" + interval + "\"");
             return View("Views/Charts.cshtml");
         }
 
@@ -96,13 +96,14 @@ namespace HomesicknessVisualiser.Controllers
             catch (Exception e)
             {
                 _logger.LogWarning("failed to retrieve information about \"" + interval + "\" from the database: " + e.Message);
-
+                _logger.LogInformation("request for \"" + interval + "\" was replaced with one calling for a longer interval");
                 records = new List<Record>();
                 return false;
             }
 
             if (records.Count < 2)
             {
+                _logger.LogWarning("there weren't enough records found to display, only " + records.Count);
                 _logger.LogInformation("request for \"" + interval + "\" was replaced with one calling for a longer interval");
                 return false;
             }
@@ -111,7 +112,7 @@ namespace HomesicknessVisualiser.Controllers
         }
 
         private static void PrepareAreaChart(List<Record> records,
-                                         Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary ViewData)
+                                             Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary ViewData)
         {
             var bpTemps = records.Select(r => r.BpTemperature).ToArray();
             var csTemps = records.Select(r => r.CsTemperature).ToArray();
@@ -124,7 +125,7 @@ namespace HomesicknessVisualiser.Controllers
         }
 
         private static void PrepareBarChart(List<Record> records,
-                                        Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary ViewData)
+                                            Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary ViewData)
         {
             Record latest = records.OrderByDescending(r => r.Time).First();
             Record worst = _recordService.GetWorst();
