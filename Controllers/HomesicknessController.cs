@@ -33,8 +33,7 @@ namespace HomesicknessVisualiser.Controllers
             switch (interval)
             { 
                 case Interval.day:
-                    var day = new TimeSpan(1, 0, 0, 0);
-                    var recordsWereFoundForDay = TryFindRecords(day, interval, out records);
+                    var recordsWereFoundForDay = TryFindRecords(interval, out records);
                     if (!recordsWereFoundForDay)
                     {
                         TempData["redirected"] = true; 
@@ -42,8 +41,7 @@ namespace HomesicknessVisualiser.Controllers
                     }
                     break;
                 case Interval.week:
-                    var week = new TimeSpan(7, 0, 0, 0);
-                    var recordsWereFoundForWeek = TryFindRecords(week, interval, out records);
+                    var recordsWereFoundForWeek = TryFindRecords(interval, out records);
                     if (!recordsWereFoundForWeek)
                     {
                         TempData["redirected"] = true;
@@ -87,8 +85,9 @@ namespace HomesicknessVisualiser.Controllers
             return View("Views/Charts.cshtml");
         }
 
-        private static bool TryFindRecords(TimeSpan timespan, Interval interval, out List<Record> records)
+        private static bool TryFindRecords(Interval interval, out List<Record> records)
         {
+            var timespan = interval.Equals(Interval.day) ? new TimeSpan(1, 0, 0, 0) : new TimeSpan(7, 0, 0, 0);
             try
             {
                 records = _recordService.GetFor(timespan);
