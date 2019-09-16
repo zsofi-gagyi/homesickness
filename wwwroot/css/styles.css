@@ -103,7 +103,10 @@ span {
 
 #errorMessage {
     color: #cc0479;
-    font-size: 20px;
+    font-size: 23px;
+    font-weight: bold;
+    text-align: center;
+    transform: translateY(-100px);
 }
 
 footer {
