@@ -50,9 +50,13 @@
                         count: '0'
                     },
                     gridlines: {
-                        color: "lightgrey"
+                        color: "lightgrey",
+                        units: {
+                            months: { format: ['MMM. YYYY'] },
+                            days: { format: ['MMM. dd'] },
+                            hours: { format: ['ha'] }
+                        }
                     },
-                    format: ['MMMM d, h', 'ha']
                 },
                 chartArea: {
                     width: "87%",

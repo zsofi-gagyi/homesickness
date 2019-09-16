@@ -130,12 +130,12 @@ namespace HomesicknessVisualiser.Controllers
             Record latest = records.OrderByDescending(r => r.Time).First();
             Record worst = _recordService.GetWorst();
 
-            ViewData.Add("latestAnnotation", ("Bp " + latest.BpTemperature + "°C, " +
+            ViewData.Add("latestAnnotation", ("Bp " + latest.BpTemperature + "°C,\n" +
                                               "Cs " + latest.CsTemperature + "°C"));
             ViewData.Add("latestIndex", (latest.Index));
 
-            ViewData.Add("worstAnnotation", (worst.Time.Date.ToShortDate() + ": " +
-                                                "Bp " + worst.BpTemperature + "°C, " +
+            ViewData.Add("worstAnnotation", (worst.Time.Date.ToShortDate() + ": \n" +
+                                                "Bp " + worst.BpTemperature + "°C,\n" +
                                                 "Cs " + worst.CsTemperature + "°C"));
             ViewData.Add("worstIndex", (worst.Index));
         }
