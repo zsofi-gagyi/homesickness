@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using HomesicknessVisualiser.Controllers;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -21,9 +22,9 @@ namespace HonvagyVisualiser
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
                 .ConfigureLogging(logging =>
-                {                                  // TODO: after chosing a hosting service,
-                    logging.ClearProviders();      // adapt logging providers to the hosting 
-                    logging.AddConsole();          // environment
+                {
+                    logging.ClearProviders();
+                    logging.AddAzureWebAppDiagnostics();
                 });
     }
 }

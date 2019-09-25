@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using HomesicknessVisualiser.Models;
 using HomesicknessVisualiser.Services;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace HomesicknessVisualiser.Controllers
 {
@@ -13,11 +14,13 @@ namespace HomesicknessVisualiser.Controllers
         private static ILogger _logger;
         public enum Interval {day, week, all};
         private static RecordService _recordService;
+        private static TemperatureAsker _temperatureAsker;
 
-        public HomesicknessController(ILogger<HomesicknessController> logger, RecordService recordService)
+        public HomesicknessController(ILogger<HomesicknessController> logger, RecordService recordService, TemperatureAsker temperatureAsker)
         {
             _logger = logger;
             _recordService = recordService;
+            _temperatureAsker = temperatureAsker;
         }
 
         [HttpGet("/")]
@@ -25,6 +28,14 @@ namespace HomesicknessVisualiser.Controllers
         {
             return Redirect("/homesickness/week");
         }
+
+        [HttpGet("/ask")]
+        public async Task Ask()
+        {
+            _logger.LogInformation("about to start asking temperatures");
+            await _temperatureAsker.Ask();
+        }
+
 
         [HttpGet("homesickness/{interval}")]
         public IActionResult Charts(Interval interval)
