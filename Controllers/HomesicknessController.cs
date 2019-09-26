@@ -20,8 +20,14 @@ namespace HomesicknessVisualiser.Controllers
             _recordService = recordService;
         }
 
-        [HttpGet("/{interval?}")]
-        public IActionResult Charts(Interval interval = Interval.day)
+        [HttpGet("/")]
+        public IActionResult Default()
+        {
+            return Redirect("/day");
+        }
+
+        [HttpGet("/{interval}")]
+        public IActionResult Charts(Interval interval)
         {
             Tuple<List<Record>, bool> recordsOrRedirected = GetRecordsOrRedirected(interval);
             bool isRedirected = recordsOrRedirected.Item2;
