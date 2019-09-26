@@ -25,20 +25,9 @@ namespace HomesicknessVisualiser.Controllers
         [HttpGet("/ask")]
         public async Task Ask()
         {
-            _logger.LogInformation("beginning to ask about temperatures");
-
-            string result = "";
-            JObject objectResult = null;
-            try
-            { 
-            result = await _client.GetStringAsync("");
-            objectResult = JObject.Parse(result);
-
-            _logger.LogInformation("response from the weather API was received and parsed");
-            }
-            catch (Exception e)
+            JObject objectResult = await GetObjectResult();
+            if (objectResult == null)
             {
-                _logger.LogWarning("connection to the weather API or parsing the result was unsuccesful: " + e.Message);
                 return;
             }
 
@@ -51,13 +40,29 @@ namespace HomesicknessVisualiser.Controllers
             }
             catch
             {
-                _logger.LogWarning("the response has an unexpected format and could not be used: " + result);
+                _logger.LogWarning("the response has an unexpected format and could not be used");
                 return;
             }
 
             int index = IndexCalculator.CalculateIndex(bpTemp, csTemp);
-
             SaveRecord(bpTemp, csTemp, index);
+        }
+
+        private async Task<JObject> GetObjectResult()
+        {
+            try
+            {
+                string result = await _client.GetStringAsync("");
+                JObject objectResult = JObject.Parse(result);
+
+                _logger.LogInformation("response from the weather API was received and parsed");
+                return objectResult;
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning("connection to the weather API or parsing the result was unsuccesful: " + e.Message);
+                return null;
+            }
         }
 
         private static float GetTemperatureFor(JObject objectResult, int i)

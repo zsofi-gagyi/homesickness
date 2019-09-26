@@ -11,7 +11,7 @@ namespace HomesicknessVisualiser.Controllers
     public class HomesicknessController : Controller
     {
         private static ILogger _logger;
-        public enum Interval {day, week, all};
+        public enum Interval { day, week, all };
         private static RecordService _recordService;
 
         public HomesicknessController(ILogger<HomesicknessController> logger, RecordService recordService)
@@ -20,40 +20,19 @@ namespace HomesicknessVisualiser.Controllers
             _recordService = recordService;
         }
 
-        [HttpGet("/")]
-        public IActionResult GetDefault()
+        [HttpGet("/{interval?}")]
+        public IActionResult Charts(Interval interval = Interval.day)
         {
-            return Redirect("/homesickness/week");
-        }
-
-        [HttpGet("homesickness/{interval}")]
-        public IActionResult Charts(Interval interval)
-        {
-            List<Record> records;
-            if ((int)interval < 2)
+            Tuple<List<Record>, bool> recordsOrRedirected = GetRecordsOrRedirected(interval);
+            bool isRedirected = recordsOrRedirected.Item2;
+            if (isRedirected)
             {
-                bool recordsWereFoundForInterval = TryFindRecords(interval, out records);
-                if (!recordsWereFoundForInterval)
-                {
-                    TempData["redirected"] = true;
-                    interval = interval.Equals(Interval.day) ? Interval.week : Interval.all;
-                    return Redirect("/homesickness/" + interval);
-                }
-            }
-            else
-            {
-                try
-                {
-                    records = _recordService.GetAll();
-                    _logger.LogInformation("retrieved the entire list of records from the database");
-                }
-                catch (Exception e)
-                {
-                    records = new List<Record>();
-                    _logger.LogWarning("failed to retrieve the entire list of records from the database: " + e.Message);
-                }
+                TempData["redirected"] = true;
+                interval = interval.Equals(Interval.day) ? Interval.week : Interval.all;
+                return Redirect("/" + interval);
             }
 
+            List<Record> records = recordsOrRedirected.Item1;
             ViewData.Add("interval", interval.ToString());
 
             if (records.Count < 2)
@@ -72,9 +51,38 @@ namespace HomesicknessVisualiser.Controllers
 
             PrepareAreaChart(records, ViewData);
             PrepareBarChart(records, ViewData);
-            
+
             _logger.LogInformation("view generated for \"" + interval + "\"");
             return View("Views/Charts.cshtml");
+        }
+
+        private Tuple<List<Record>, bool> GetRecordsOrRedirected(Interval interval){
+            List<Record> records;
+            bool isRedirected = false;
+
+            if ((int)interval < 2)
+            {
+                bool recordsWereFoundForInterval = TryFindRecords(interval, out records);
+                if (!recordsWereFoundForInterval)
+                {
+                    isRedirected = true;
+                }
+            }
+            else
+            {
+                try
+                {
+                    records = _recordService.GetAll();
+                    _logger.LogInformation("retrieved the entire list of records from the database");
+                }
+                catch (Exception e)
+                {
+                    records = new List<Record>();
+                    _logger.LogWarning("failed to retrieve the entire list of records from the database: " + e.Message);
+                }
+            }
+
+            return Tuple.Create(records, isRedirected);
         }
 
         private static bool TryFindRecords(Interval interval, out List<Record> records)

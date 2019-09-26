@@ -25,9 +25,9 @@
     </div>
     <div id="links">
         <span>The area chart on the left shoud depict the weather:</span>
-        <a href="/homesickness/week" class=@(ViewData["interval"].Equals("week") ? "chosen" : "notChosen")>for the last week</a>
-        <a href="/homesickness/day" class=@(ViewData["interval"].Equals("day") ? "chosen" : "notChosen")>for the last day</a>
-        <a id="lastLink" href="/homesickness/all" class=@(ViewData["interval"].Equals("all") ? "chosen" : "notChosen")>since the app has started gathering data</a>
+        <a href="/week" class=@(ViewData["interval"].Equals("week") ? "chosen" : "notChosen")>for the last week</a>
+        <a href="/day" class=@(ViewData["interval"].Equals("day") ? "chosen" : "notChosen")>for the last day</a>
+        <a id="lastLink" href="/all" class=@(ViewData["interval"].Equals("all") ? "chosen" : "notChosen")>since the app has started gathering data</a>
     </div>
     @if (ViewData["errorMessage"] != null)
      {
