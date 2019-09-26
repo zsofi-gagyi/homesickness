@@ -1,13 +1,13 @@
-<img src="https://github.com/zsofi-gagyi/homesickness/blob/master/screenshots/2.png" width="870px"></img> 
-
 <h2>Homesickness</h2>
-<br/>
+<h3>Deployed <a href="https://homesicknessvisualiser.azurewebsites.net/homesickness/week">here</a></h3>
+
 <p>This is a web app that asks a free weather API every hour about the temperatures in my hometown and current city, stores the data and displays it for different intervals, chosen by the users. (The data from the sceenshot is mostly real, captured in the second half of July 2019.)</p>
+<p>It's hosted on Azure.</p>
 
 The project uses
 
-- C# + .NET Core
-- Hangfire for scheduling background tasks
-- MySQL with EntityFramework for storing data
+- C# + .NET Core 2.2
+- Azure Functions for background tasks
+- Azure "SQL Database" with EntityFramework for storing data
 - RazorViews + HTML, CSS and Google charts for presentation
-- and has a logger which logs on the console.
+- a logger with output that can be read from the Azure portal
