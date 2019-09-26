@@ -1,5 +1,6 @@
 ﻿using HomesicknessVisualiser.Models;
 using HomesicknessVisualiser.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;
@@ -8,21 +9,24 @@ using System.Threading.Tasks;
 
 namespace HomesicknessVisualiser.Controllers
 {
-    public class TemperatureAsker 
+    public class TemperatureAskingController : Controller
     {
         private readonly ILogger _logger;
         private readonly HttpClient _client;
         private readonly RecordService _recordService;
 
-        public TemperatureAsker(ILogger<TemperatureAsker> logger, IHttpClientFactory httpClientFactory, RecordService recordService)
+        public TemperatureAskingController(ILogger<TemperatureAskingController> logger, IHttpClientFactory httpClientFactory, RecordService recordService)
         {
             _logger = logger;
             _client = httpClientFactory.CreateClient("temperatureGetter");
             _recordService = recordService;
         }
 
+        [HttpGet("/ask")]
         public async Task Ask()
         {
+            _logger.LogInformation("beginning to ask about temperatures");
+
             string result = "";
             JObject objectResult = null;
             try
@@ -51,7 +55,29 @@ namespace HomesicknessVisualiser.Controllers
                 return;
             }
 
-            int index = IndexCalculator.getIndex(bpTemp, csTemp);
+            int index = IndexCalculator.CalculateIndex(bpTemp, csTemp);
+
+            SaveRecord(bpTemp, csTemp, index);
+        }
+
+        private static float GetTemperatureFor(JObject objectResult, int i)
+        {
+            float tempInKelvin;
+            try
+            {
+                tempInKelvin = objectResult["list"][i]["main"]["temp"].Value<float>();
+            } 
+            catch
+            {
+                throw;
+            }
+
+            float tempWithManyDecimals = tempInKelvin - 273.15f;
+            return MathF.Truncate(tempWithManyDecimals * 10) / 10F;
+        }
+
+        private void SaveRecord(float bpTemp, float csTemp, int index)
+        {
             try
             {
                 _recordService.Save(
@@ -69,22 +95,6 @@ namespace HomesicknessVisualiser.Controllers
             {
                 _logger.LogWarning("record could not be saved");
             }
-        }
-
-        private static float GetTemperatureFor(JObject objectResult, int i)
-        {
-            float tempInKelvin;
-            try
-            {
-                tempInKelvin = objectResult["list"][i]["main"]["temp"].Value<float>();
-            } 
-            catch
-            {
-                throw;
-            }
-
-            float tempWithManyDecimals = tempInKelvin - 273.15f;
-            return MathF.Truncate(tempWithManyDecimals * 10) / 10F;
         }
     }
 }

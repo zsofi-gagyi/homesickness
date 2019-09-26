@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using HomesicknessVisualiser.Models;
 using HomesicknessVisualiser.Services;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace HomesicknessVisualiser.Controllers
 {
@@ -14,13 +13,11 @@ namespace HomesicknessVisualiser.Controllers
         private static ILogger _logger;
         public enum Interval {day, week, all};
         private static RecordService _recordService;
-        private static TemperatureAsker _temperatureAsker;
 
-        public HomesicknessController(ILogger<HomesicknessController> logger, RecordService recordService, TemperatureAsker temperatureAsker)
+        public HomesicknessController(ILogger<HomesicknessController> logger, RecordService recordService)
         {
             _logger = logger;
             _recordService = recordService;
-            _temperatureAsker = temperatureAsker;
         }
 
         [HttpGet("/")]
@@ -29,48 +26,32 @@ namespace HomesicknessVisualiser.Controllers
             return Redirect("/homesickness/week");
         }
 
-        [HttpGet("/ask")]
-        public async Task Ask()
-        {
-            _logger.LogInformation("about to start asking temperatures");
-            await _temperatureAsker.Ask();
-        }
-
-
         [HttpGet("homesickness/{interval}")]
         public IActionResult Charts(Interval interval)
         {
             List<Record> records;
-            switch (interval)
-            { 
-                case Interval.day:
-                    var recordsWereFoundForDay = TryFindRecords(interval, out records);
-                    if (!recordsWereFoundForDay)
-                    {
-                        TempData["redirected"] = true; 
-                        return Redirect("/homesickness/week");
-                    }
-                    break;
-                case Interval.week:
-                    var recordsWereFoundForWeek = TryFindRecords(interval, out records);
-                    if (!recordsWereFoundForWeek)
-                    {
-                        TempData["redirected"] = true;
-                        return Redirect("/homesickness/all");
-                    }; 
-                    break;
-                default:
-                    try
-                    {
-                        records = _recordService.GetAll();
-                        _logger.LogInformation("retrieved the entire list of records from the database");
-                    }
-                    catch (Exception e)
-                    {
-                        records = new List<Record>();
-                        _logger.LogWarning("failed to retrieve the entire list of records from the database: " + e.Message);
-                    }
-                    break;
+            if ((int)interval < 2)
+            {
+                bool recordsWereFoundForInterval = TryFindRecords(interval, out records);
+                if (!recordsWereFoundForInterval)
+                {
+                    TempData["redirected"] = true;
+                    interval = interval.Equals(Interval.day) ? Interval.week : Interval.all;
+                    return Redirect("/homesickness/" + interval);
+                }
+            }
+            else
+            {
+                try
+                {
+                    records = _recordService.GetAll();
+                    _logger.LogInformation("retrieved the entire list of records from the database");
+                }
+                catch (Exception e)
+                {
+                    records = new List<Record>();
+                    _logger.LogWarning("failed to retrieve the entire list of records from the database: " + e.Message);
+                }
             }
 
             ViewData.Add("interval", interval.ToString());

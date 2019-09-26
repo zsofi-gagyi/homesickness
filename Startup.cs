@@ -29,7 +29,6 @@ namespace HonvagyVisualiser
             });
 
             services.AddScoped<RecordService>();
-            services.AddScoped<TemperatureAsker>();
         }
 
         public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
