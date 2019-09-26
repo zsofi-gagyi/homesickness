@@ -23,18 +23,9 @@ namespace HomesicknessVisualiser.Controllers
 
         public async Task Ask()
         {
-            string result = "";
-            JObject objectResult = null;
-            try
-            { 
-            result = await _client.GetStringAsync("");
-            objectResult = JObject.Parse(result);
-
-            _logger.LogInformation("response from the weather API was received and parsed");
-            }
-            catch (Exception e)
+            JObject objectResult = await GetObjectResult();
+            if (objectResult == null)
             {
-                _logger.LogWarning("connection to the weather API or parsing the result was unsuccesful: " + e.Message);
                 return;
             }
 
@@ -47,11 +38,49 @@ namespace HomesicknessVisualiser.Controllers
             }
             catch
             {
-                _logger.LogWarning("the response has an unexpected format and could not be used: " + result);
+                _logger.LogWarning("the response has an unexpected format and could not be used");
                 return;
             }
 
-            int index = IndexCalculator.getIndex(bpTemp, csTemp);
+            int index = IndexCalculator.CalculateIndex(bpTemp, csTemp);
+            SaveRecord(bpTemp, csTemp, index);
+        }
+
+        private async Task<JObject> GetObjectResult()
+        {
+            try
+            {
+                string result = await _client.GetStringAsync("");
+                JObject objectResult = JObject.Parse(result);
+
+                _logger.LogInformation("response from the weather API was received and parsed");
+                return objectResult;
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning("connection to the weather API or parsing the result was unsuccesful: " + e.Message);
+                return null;
+            }
+        }
+
+        private static float GetTemperatureFor(JObject objectResult, int i)
+        {
+            float tempInKelvin;
+            try
+            {
+                tempInKelvin = objectResult["list"][i]["main"]["temp"].Value<float>();
+            }
+            catch
+            {
+                throw;
+            }
+
+            float tempWithManyDecimals = tempInKelvin - 273.15f;
+            return MathF.Truncate(tempWithManyDecimals * 10) / 10F;
+        }
+
+        private void SaveRecord(float bpTemp, float csTemp, int index)
+        {
             try
             {
                 _recordService.Save(
@@ -69,22 +98,6 @@ namespace HomesicknessVisualiser.Controllers
             {
                 _logger.LogWarning("record could not be saved");
             }
-        }
-
-        private static float GetTemperatureFor(JObject objectResult, int i)
-        {
-            float tempInKelvin;
-            try
-            {
-                tempInKelvin = objectResult["list"][i]["main"]["temp"].Value<float>();
-            } 
-            catch
-            {
-                throw;
-            }
-
-            float tempWithManyDecimals = tempInKelvin - 273.15f;
-            return MathF.Truncate(tempWithManyDecimals * 10) / 10F;
         }
     }
 }
