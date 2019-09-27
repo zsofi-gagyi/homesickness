@@ -1,8 +1,8 @@
 ﻿@{
     Layout = "_Layout";
 }
-    <script src="https://www.gstatic.com/charts/loader.js"></script>
-    <script>
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
         google.charts.load('current', { 'packages': ['corechart'] });
         google.charts.setOnLoadCallback(drawChart);
 
@@ -23,7 +23,7 @@
             let options = {
                 colors: ['orange', 'blue'],
                 vAxis: {
-                   
+
                     title: 'temperature in °C',
                     titleTextStyle: {
                         fontSize: '18',
@@ -79,8 +79,8 @@
             let chart = new google.visualization.AreaChart(document.getElementById('area_chart'));
             chart.draw(data, options);
         }
-    </script>
-    <script>
+</script>
+<script>
         google.charts.load("current", { packages: ['corechart'] });
         google.charts.setOnLoadCallback(drawChart);
 
@@ -91,8 +91,8 @@
 
         function drawChart() {
             let data = new google.visualization.DataTable();
-            data.addColumn('string', 'coumn name'); 
-            data.addColumn('number', 'index value'); 
+            data.addColumn('string', 'coumn name');
+            data.addColumn('number', 'index value');
             data.addColumn({ type: 'string', role: 'annotation' });
             data.addColumn({type:'string', role:'style'});
             data.addRows([
@@ -104,13 +104,13 @@
 
             let myTicks = [{ v: 0, f: 'Budapest is a beautiful city' }];
             for (let i = 0; i < 5; i++) {
-                myTicks.push({ v: i * 100, f: " " });
+                myTicks.push({ v: i * 1000, f: " " });
             }
-            myTicks.push({ v: 500, f: 'not great, not terrible' });
+            myTicks.push({ v: 5000, f: 'not great, not terrible' });
             for (let i = 6; i < 10; i++) {
-                myTicks.push({ v: i * 100, f: " " });
+                myTicks.push({ v: i * 1000, f: " " });
             }
-            myTicks.push({ v: 1000, f: "when's the first train home?" });
+            myTicks.push({ v: 10000, f: "when's the first train home?" });
 
             let options = {
                 bar: { groupWidth: "70%" },
@@ -148,4 +148,4 @@
             let chart = new google.visualization.ColumnChart(document.getElementById("column_chart"));
             chart.draw(view, options);
         }
-    </script>
+</script>
