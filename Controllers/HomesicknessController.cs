@@ -10,13 +10,11 @@ namespace HomesicknessVisualiser.Controllers
 {
     public class HomesicknessController : Controller
     {
-        private static ILogger _logger;
         public enum Interval { day, week, all };
         private static RecordService _recordService;
 
-        public HomesicknessController(ILogger<HomesicknessController> logger, RecordService recordService)
+        public HomesicknessController(RecordService recordService)
         {
-            _logger = logger;
             _recordService = recordService;
         }
 
@@ -43,7 +41,6 @@ namespace HomesicknessVisualiser.Controllers
 
             if (records.Count < 2)
             {
-                _logger.LogWarning("there weren't enough records found to display, only " + records.Count);
                 ViewData.Add("errorMessage", "There are not enough records to display. We keep collecting them, please " +
                     "come back soon!");
                 return View("Views/Charts.cshtml");
@@ -58,7 +55,6 @@ namespace HomesicknessVisualiser.Controllers
             PrepareAreaChart(records, ViewData);
             PrepareBarChart(records, ViewData);
 
-            _logger.LogInformation("view generated for \"" + interval + "\"");
             return View("Views/Charts.cshtml");
         }
 
@@ -79,12 +75,10 @@ namespace HomesicknessVisualiser.Controllers
                 try
                 {
                     records = _recordService.GetAll();
-                    _logger.LogInformation("retrieved the entire list of records from the database");
                 }
-                catch (Exception e)
+                catch
                 {
                     records = new List<Record>();
-                    _logger.LogWarning("failed to retrieve the entire list of records from the database: " + e.Message);
                 }
             }
 
@@ -97,20 +91,15 @@ namespace HomesicknessVisualiser.Controllers
             try
             {
                 records = _recordService.GetFor(timespan);
-                _logger.LogInformation("retrieved information about \"" + interval + "\" from the database");
             }
             catch (Exception e)
             {
-                _logger.LogWarning("failed to retrieve information about \"" + interval + "\" from the database: " + e.Message);
-                _logger.LogInformation("request for \"" + interval + "\" was replaced with one calling for a longer interval");
                 records = new List<Record>();
                 return false;
             }
 
             if (records.Count < 2)
             {
-                _logger.LogWarning("there weren't enough records found to display, only " + records.Count);
-                _logger.LogInformation("request for \"" + interval + "\" was replaced with one calling for a longer interval");
                 return false;
             }
 

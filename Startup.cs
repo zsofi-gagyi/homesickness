@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using HomesicknessVisualiser.Controllers;
 using HomesicknessVisualiser.Repositories;
 using HomesicknessVisualiser.Services;
 

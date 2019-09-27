@@ -11,13 +11,11 @@ namespace HomesicknessVisualiser.Controllers
 {
     public class TemperatureAskingController : Controller
     {
-        private readonly ILogger _logger;
         private readonly HttpClient _client;
         private readonly RecordService _recordService;
 
-        public TemperatureAskingController(ILogger<TemperatureAskingController> logger, IHttpClientFactory httpClientFactory, RecordService recordService)
+        public TemperatureAskingController(IHttpClientFactory httpClientFactory, RecordService recordService)
         {
-            _logger = logger;
             _client = httpClientFactory.CreateClient("temperatureGetter");
             _recordService = recordService;
         }
@@ -36,11 +34,9 @@ namespace HomesicknessVisualiser.Controllers
             {
                 bpTemp = GetTemperatureFor(objectResult, 0);
                 csTemp = GetTemperatureFor(objectResult, 1);
-                _logger.LogInformation("response processed into temperatures");
             }
             catch
             {
-                _logger.LogWarning("the response has an unexpected format and could not be used");
                 return;
             }
 
@@ -54,13 +50,10 @@ namespace HomesicknessVisualiser.Controllers
             {
                 string result = await _client.GetStringAsync("");
                 JObject objectResult = JObject.Parse(result);
-
-                _logger.LogInformation("response from the weather API was received and parsed");
                 return objectResult;
             }
             catch (Exception e)
             {
-                _logger.LogWarning("connection to the weather API or parsing the result was unsuccesful: " + e.Message);
                 return null;
             }
         }
@@ -83,23 +76,15 @@ namespace HomesicknessVisualiser.Controllers
 
         private void SaveRecord(float bpTemp, float csTemp, int index)
         {
-            try
-            {
-                _recordService.Save(
-                    new Record
-                    {
-                        BpTemperature = bpTemp,
-                        CsTemperature = csTemp,
-                        Time = DateTime.Now,
-                        Index = index
-                    }
-                );
-                _logger.LogInformation("record saved");
-            }
-            catch
-            {
-                _logger.LogWarning("record could not be saved");
-            }
+            _recordService.Save(
+                new Record
+                {
+                    BpTemperature = bpTemp,
+                    CsTemperature = csTemp,
+                    Time = DateTime.Now,
+                    Index = index
+                }
+            );
         }
     }
 }

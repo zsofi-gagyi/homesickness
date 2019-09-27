@@ -15,9 +15,9 @@ namespace HomesicknessVisualiser.Services
             this._applicationContext = applicationContext;
         }
 
-        public List<Record> GetFor(TimeSpan time)
+        public List<Record> GetFor(TimeSpan timeLimit)
         {
-            return _applicationContext.Records.Where(t => (DateTime.Now.Subtract(t.Time) <= time)).ToList();
+            return _applicationContext.Records.Where(t => (DateTime.Now.Subtract(t.Time) <= timeLimit)).ToList();
         }
 
         public List<Record> GetAll()
